@@ -55,7 +55,7 @@ const cardTrickModel = {
             'nine-', 'ten-', 'jack-', 'queen-', 'king-'];
         const deck: Array<Card> = [];
         for (let i = 0; i < 4; i++) {
-            let folderName = '/Cards';
+            let folderName = process.env.PUBLIC_URL + '/Cards';
             let imageName;
             if (i === 0) {
                 folderName += '/Spades';

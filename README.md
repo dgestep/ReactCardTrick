@@ -1,46 +1,128 @@
-# Getting Started with Create React App
+# Card Trick Using React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project presents a simple card trick using the [React](https://github.com/facebook/create-react-app) library. 
+I created this project as a fun way to learn React. Feel free to clone this project to learn how the React library can 
+be used to easily create single page applications.
 
-## Available Scripts
+## How to Play
 
-In the project directory, you can run:
+1) The application will deal 21 randomly selected cards from a 52 card deck. The cards are dealt from left-to-right in 7 rows and 3 columns.
 
-### `npm start`
+<div style="background: #eeeeee;">
+    <table cellpadding="4" cellspacing="1" width="100%" border="0">
+    <thead>
+    <tr>
+        <th width="5">&nbsp;</th>
+        <th align="left" valign="top">Column 1</th>
+        <th align="left" valign="top">Column 2</th>
+        <th align="left" valign="top">Column 3</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>1</td>
+        <td>
+            <img src="public/Cards/Clubs/ace-club.jpeg" alt="card image" style="border-radius: 0.30rem;"/>
+        </td>
+        <td>
+            <img src="public/Cards/Diamonds/eight-diamond.jpeg" alt="card image" style="border-radius: 0.30rem;"/>
+        </td>
+        <td>
+            <img src="public/Cards/Hearts/six-heart.jpeg" alt="card image" style="border-radius: 0.30rem;"/>
+        </td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td align="center" valign="top" colspan="3">... ... ... ... ... ... 5 more rows ... ... ... ...  ...  ...  ...</td> 
+    </tr>
+    <tr>
+        <td>7</td>
+        <td>
+            <img src="public/Cards/Spades/two-spade.jpeg" alt="card image" style="border-radius: 0.30rem;"/>
+        </td>
+        <td>
+            <img src="public/Cards/Clubs/ten-club.jpeg" alt="card image" style="border-radius: 0.30rem;"/>
+        </td>
+        <td>
+            <img src="public/Cards/Diamonds/jack-diamond.jpeg" alt="card image" style="border-radius: 0.30rem;"/>
+        </td>
+    </tr>
+    </tbody>
+    </table>
+</div>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+2) The player is asked to choose a card but not say the card out loud. Instead, say the column the card is in.
+3) The application re-deals the 21 cards from left-to-right again and the player is asked again which column the card is in.
+4) The application re-deals the 21 cards from left-to-right a final time and, again, the player is asked to choose which column the card is in.
+5) After the third re-deal, the application identifies and displays the players card on the screen.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+You can see the card trick in action from my website at [Estep Software Forensics](https://estepsoftwareforensics.com/card-trick)
 
-### `npm test`
+## How does it Work?
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+It's magic! Ok, it's not magic. It's a process of elimination.
 
-### `npm run build`
+The elimination happens based on how you scoop and re-deal the cards. 
+1) You scoop the cards column-by-colum, from top to bottom. 
+   1) It's important that you keep the top card on the top of the pile on each column. For example, when scooping 
+   Column 1 from the image above, the ace of clubs should remain on the top of the scooped column.
+2) Most importantly, the column the user chooses must be scooped in the middle of the three columns. 
+   1) For example, if the user chose the Jack of diamonds from the image above, you can scoop either column one or two first. You must scoop the third column next, and then the final column last.
+3) You then turn the deck over and re-deal the cards again from left-to-right (top to bottom).
+4) Repeat steps 1 - 3 three times. 
+5) As you scoop and re-deal, the players card is being positioned in the dealt cards. On the third deal, the players card will always be the fourth card from the top. 
+6) You now know the players card. You can then shuffle the cards, or perform any amount of theater to confuse and entertain the audience. Turn over the players chosen card and watch their amazement. :-)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## The Application
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+This application implements this scoop, re-deal, and card positioning logic. Ideally, the scoop, re-deal, and 
+card positioning logic would be placed in a separate project which exposes REST services. But, for simplicity, I put the
+model logic in the typescript. 
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The CardLayout.tsx component encapsulates the trick. The model logic is in the `cardTrickModel` object.
 
-### `npm run eject`
+```typescript
+/**
+ * An object which holds the model logic that knows how to deal, re-deal, and pick the correct card.
+ * This logic would most-likely be in a separate REST layer project and this script would be replaced with simple REST
+ * service calls.
+ */
+const cardTrickModel = {
+        /**
+         * Returns the card chosen by the player.
+         * @param columnNumber the column number where the card lives.
+         */
+        pickCard(columnNumber: number): Card {
+        },
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+        /**
+         * Returns 52 deck of cards as an array of Cards.
+         * @return the 52 cards.
+         */
+        openNewDeck(): Array<Card> {
+        },
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+        /**
+         * Returns 21 randomly chosen cards from a 52 card deck.
+         * @return the 21 cards.
+         */
+        deal21(deck: Array<Card>): void {
+        },
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+        /**
+         * Re-arranges the 21 cards, keeping the order of the cards from top to bottom and keeping the selected column in
+         * the middle of the three columns.
+         * @param columnNumber the column number where the chosen card lives.
+         */
+        reDeal21(columnNumber: number): void {
+        },
+}
+```
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+The exported component is called, `CardLayout`. It handles orchestrating the trick and displaying the cards.
 
-## Learn More
+I didn't go out of my way to make it too snazzy. It's a quick and simple application and a fun way of learning React.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Enjoy!
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Doug
